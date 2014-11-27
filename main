@@ -1,0 +1,110 @@
+#__author__ = 'Haythem Sahbani'
+
+#from __future__ import division #force float division
+import math
+import feature_extraction
+import scipy
+import numpy as np
+import pylab
+import pandas as pd
+import matplotlib
+import functions
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.cross_validation import train_test_split
+import Segmentation
+
+data_path ="E:/Documents/Passau - 2014 - 2015/Machine learnig and context recognition/Project/PAMAP2_Dataset/Protocol/subject101.dat"
+
+data = np.loadtxt(data_path, delimiter=" ")
+
+segment = Segmentation
+print(type(segment))
+#s = segment.Segmentation.segmentNp(data)
+#print(s)
+
+"""
+heart_frame = data[:, 2]
+notNull = heart_frame > 0
+heart_frame = heart_frame[notNull]
+maxHR = heart_frame.max()
+minHR = heart_frame.min()
+
+print(maxHR, "\t", minHR)
+x = feature_extraction.heart_rate_extraction(data[2928:10000, 2], maxHR, minHR)
+print("normalized heart rate = ", x)
+
+
+
+
+def segment(data, frame=512): #df: dataframe
+    #nrOfCols = np.shape(data)
+    #result = pd.DataFrame([range(0, nrOfCols)])
+    result = np.zeros((math.floor(len(data)/frame), 4))
+    for i in range(0, math.floor(len(data)/frame)):
+        result[i, 0] = i
+        #line[1] = df[1][i+256] #MET Label
+        result[i, 1] = data[i*frame+frame/2, 1] #MET Label
+        #print(df.ix[i, 1])
+        #result[2] = df[2][i*frame:i*frame+frame].mean(axis=0, numeric_only=True) #heart rate
+        result[i, 2] = feature_extraction.heart_rate_extraction(data[i*frame:i*frame+frame, 2], maxHR, minHR)
+        result[i, 3] = feature_extraction.energy_extraction(data[i*frame:i*frame+frame, 4])
+        #result.loc[len(result)] = line
+        #print("result[i, 2] = ", result[i, 2])
+    return result
+r1 = segment(data[2928:10000])
+
+#print(r1[:, 2])
+
+
+## adaboost
+
+
+features_train, features_test, labels_train, labels_test = train_test_split(r1[:, 2], r1[:, 1], test_size=0.33, random_state=42)
+#print("features_train = ", features_train)
+#print("features_test = ", features_test)
+#print("labels_train = ", labels_train)
+#print("labels_test = ", labels_test)
+adaBoost = AdaBoostClassifier()
+adaBoost.fit(features_train, labels_train)
+
+prediction = adaBoost.predict(features_test)
+print(prediction)
+
+p = adaBoost.score(features_test, labels_test)
+print(p)
+"""
+
+"""
+ # segmentation function 2.0 in progress
+
+def  segment(df, frame = 512):
+    nrOfCols = np.shape(df)[1]
+    result = pd.DataFrame([range(0,nrOfCols)])
+    line = np.zeros(nrOfCols)
+    try:
+        for i in range(0,len(df), frame):
+            if dx.ix[df.ix[i, 1]] != 0 and dx.ix[df.ix[i, 1]] == df.ix[i+frame, 1]:
+                line[0] = i/frame   # index
+                line[1] = df.ix[i, 1] # activity ID
+                line[2] = df[2][i:i+frame].mean(axis=0, numeric_only=True) # heart rate
+                result.loc[len(result)] = line
+            else:
+                test = True
+                j=0
+                # search for the last item that is in the same activity ID,
+                while test:
+                    if df.ix[i+j,1] == df.ix[i+j+1,1]:
+                        pass
+                    else:
+                        test = False
+                line[0]
+                    #  j = the index of that item.
+
+    except:
+        pass
+    finally:
+        # df = df.reset_index(drop=True)
+        pass
+"""
+
+
