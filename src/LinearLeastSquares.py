@@ -11,7 +11,7 @@ class LinearLeastSquares:
 
 
     """
-    def __init__(self, feature, learning_rate=0.01, number_iteration=1500, feature_normalizer=False):
+    def __init__(self, feature, learning_rate=0.01, number_iteration=5000, feature_normalizer=False):
         """
         :param feature:
         :param learning_rate:
@@ -46,8 +46,19 @@ class LinearLeastSquares:
             cost_function.append(self.cost_function(self.feature, label, self.theta))
         return self.theta, cost_function
 
+    def metToLevel (self, met):
+            if met < 3:
+                #return "light"
+                return 1
+            elif met < 6:
+                #return "moderate"
+                return 2
+            else:
+                #return "vigorous"
+                return 3
+
     def score(self, feature, label):
-        from Segmentation import Segmentation
+#        from Segmentation import Segmentation
         feature_ = np.copy(feature)
 
         if self.feature_normalizer:
@@ -57,7 +68,7 @@ class LinearLeastSquares:
         correct_guess_counter = 0
         prediction = np.dot(feature_, self.theta)[:, 0]
         for element in range(len(prediction)):
-            if Segmentation.metToLevel(prediction[element]) == Segmentation.metToLevel(label[element]):
+            if self.metToLevel(prediction[element]) == self.metToLevel(label[element]):
                 correct_guess_counter += 1
         return 100*float(correct_guess_counter) / len(prediction)
 

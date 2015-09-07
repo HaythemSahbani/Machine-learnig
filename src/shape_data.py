@@ -11,7 +11,7 @@ def load_files(source_dir, data_type):
     :return: list
     """
     file_list = glob.glob(source_dir + '/*.'+data_type)
-    print("number of files = ", len(file_list))
+    print(" Loading files from folder: ", source_dir, ". The number of files is ", len(file_list))
     for file_path in file_list:
         yield np.loadtxt(file_path, delimiter=" ")
 
@@ -80,9 +80,9 @@ def cross_validation(dictionary):
         yield result_dictionary
 
 
-def merge_data_set(protocol_result_file="PAMAP2_Dataset/Protocol",
-                   optional_result_file="PAMAP2_Dataset/Optional",
-                   total_result_file="total data result file.dat"):
+def merge_data_set(protocol_result_file="protocol_result_data.dat",
+                   optional_result_file="optional_result_data.dat",
+                   total_result_file="total_result_data.dat"):
     """
     Merge the protocol and optional files by subject into one resulting file.
     :param protocol_result_file:
@@ -116,35 +116,31 @@ def merge_data_set(protocol_result_file="PAMAP2_Dataset/Protocol",
                                                                             '######################################'
                                                                             '#######################################'
                                                                            '############')
-    print " Data set merged and saved in %s ",  total_result_file
+    print " Dataset merged and saved in ",  total_result_file
 
 
 def main():
 
     # The folder containing the Optional data set
-    optional_data = "PAMAP2_Dataset/Optional"
+    optional_data_folder = "PAMAP2_Dataset/Optional"
     # The folder containing the Protocol data set
-    protocol_data = "PAMAP2_Dataset/Protocol"
+    protocol_data_folder = "PAMAP2_Dataset/Protocol"
 
     # Load the data from the folders
-    optional_data_files = load_files(optional_data, "dat")
-    protocol_data_files = load_files(protocol_data, "dat")
+    optional_data_files = load_files(optional_data_folder, "dat")
+    protocol_data_files = load_files(protocol_data_folder, "dat")
 
     # Resulting files
-    protocol_result_file = " protocol result file.dat"
-    optional_result_file = "optional result file.dat"
-    total_result_file = "total data result file.dat"
+    protocol_result_file = " protocol_result_data.dat"
+    optional_result_file = "optional_result_data.dat"
+    total_result_file = "total_result_data.dat"
 
     save_data(protocol_result_file, protocol_data_files)
     save_data(optional_result_file, optional_data_files)
 
-    print "Data set processed and saved in these files: %s and %s", protocol_result_file, optional_result_file
+    print "Dataset processed and saved in these files: ", protocol_result_file, optional_result_file
 
-
-
-
-
-    print "Data set processed and saved"
+    merge_data_set(protocol_result_file, optional_result_file, total_result_file)
 
 if __name__ == "__main__":
     main()

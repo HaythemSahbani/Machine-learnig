@@ -6,8 +6,7 @@ class Segmentation:
     def __init__(self):
         pass
 
-    @staticmethod
-    def activityToMet (activityID):
+    def activityToMet (self, activityID):
         if activityID == 1 or activityID == 9:
             return 1
         elif activityID == 2 or activityID == 3:
@@ -22,7 +21,7 @@ class Segmentation:
             return 5
         elif activityID == 10:
             return 1.5
-        elif activityID == 11 or activityID == 18:
+        elif activityID == 11 or activityID == 18 :
             return 2
         elif activityID == 12:
             return 8
@@ -37,8 +36,7 @@ class Segmentation:
         else:
             return 0
 
-    @staticmethod
-    def metToLevel(met):
+    def metToLevel(self, met):
         if met < 3:
             # return "light"
             return 1
@@ -49,17 +47,15 @@ class Segmentation:
             # return "vigorous"
             return 3
 
-    @staticmethod
-    def metToLevelBinary(met):
+    def metToLevelBinary(self, met):
         if met < 6:
             #return "light"
             return 0
         else:
             #return "vigorous"
             return 1
-
-    @staticmethod
-    def energy_extraction(data):
+        
+    def energy_extraction(self, data):
         """
         :param data:
         :return:
@@ -73,8 +69,7 @@ class Segmentation:
         data = np.mean(abs(np.power(data, 2)))
         return data
 
-    @staticmethod
-    def heart_rate_extraction(data, maxHeartRate, minHeartReate):
+    def heart_rate_extraction(self, data, maxHeartRate, minHeartReate):
         """
         :param data: numpy array
         :param maxHeartRate:
@@ -87,13 +82,11 @@ class Segmentation:
         # #
         return (maxHeartRate - data.mean())/(maxHeartRate - minHeartReate)
 
-    @staticmethod
-    def stdDev(data):
+    def stdDev(self, data):
         data = [~np.isnan(data)] #deleted a
         return data.std()
-
-    @staticmethod
-    def segmentNp(data): #data: np.array
+    
+    def segmentNp(self, data): #data: np.array
         #nrOfCols = np.shape(data)[1]
         nrOfCols = 12 #ouput will have 10 Features (+ id col, + label col)
         result = np.array([np.zeros(nrOfCols)])
@@ -150,8 +143,7 @@ class Segmentation:
 
         return result[1:] #remove first line because we set it to 0 in the beginning
 
-    @staticmethod
-    def segmentMaryam(data_set):
+    def segmentMaryam(self, data_set):
         """
         :param data_set:
         :return:
@@ -201,51 +193,47 @@ class Segmentation:
         :param data:
         :return:
         """
-        result_array = np.zeros(shape=(0, 22))  # we have 21 result columns
+        result_array = np.zeros(shape=(1, 21))  # we have 21 result columns
         maxHR = np.max(data[:, 2][~np.isnan(data[:, 2])])
         minHR = np.min(data[:, 2][~np.isnan(data[:, 2])])
         for i in range(0, len(data), 512):
-            line = np.zeros(shape=(1, 22))
+            line = np.zeros(shape=(1, 21))
             line[:, 0] = i / 512
-            # activity level: light, moderate or vigorous
-            line[:, 1] = self.metToLevel(self.activityToMet(data[i][1]))
-            # activity MET
-            line[:, 2] = self.activityToMet(data[i][1])
-            # heart Rate extraction
-            line[:, 3] = self.heart_rate_extraction(data[i:i+512, 2], maxHeartRate=maxHR, minHeartReate=minHR)
+            line[:, 1] = self.metToLevel(self.activityToMet(data[i][1])) #MET Label
+            line[:, 2] = self.heart_rate_extraction(data[i:i+512, 2], maxHeartRate=maxHR, minHeartReate=minHR) # heart Rate extraction
 
             """
             Energy extraction
             """
             # IMU Hand 3D acceleration  columns 4, 5, 6, scale: 16g, resolution: 13-bit
-            line[:, 4] = self.energy_extraction(data[i:i+512, 4])
-            line[:, 5] = self.energy_extraction(data[i:i+512, 5])
-            line[:, 6] = self.energy_extraction(data[i:i+512, 6])
-            # IMU Chest 3D acceleration  columns 21, 22, 23, scale: 16g, resolution: 13-bit
-            line[:, 7] = self.energy_extraction(data[i:i+512, 21])
-            line[:, 8] = self.energy_extraction(data[i:i+512, 22])
-            line[:, 9] = self.energy_extraction(data[i:i+512, 23])
+            line[:, 3] = self.energy_extraction(data[i:i+512, 4])
+            line[:, 4] = self.energy_extraction(data[i:i+512, 5])
+            line[:, 5] = self.energy_extraction(data[i:i+512, 6])
+            # IMU Hand 3D acceleration  columns 21, 22, 23, scale: 16g, resolution: 13-bit
+            line[:, 6] = self.energy_extraction(data[i:i+512, 21])
+            line[:, 7] = self.energy_extraction(data[i:i+512, 22])
+            line[:, 8] = self.energy_extraction(data[i:i+512, 23])
             # IMU ankle 3D acceleration columns 38, 39, 40, scale: 16g, resolution: 13-bit
-            line[:, 10] = self.energy_extraction(data[i:i+512, 38])
-            line[:, 11] = self.energy_extraction(data[i:i+512, 39])
-            line[:, 12] = self.energy_extraction(data[i:i+512, 40])
+            line[:, 9] = self.energy_extraction(data[i:i+512, 38])
+            line[:, 10] = self.energy_extraction(data[i:i+512, 39])
+            line[:, 11] = self.energy_extraction(data[i:i+512, 40])
 
             """
             standard deviation extraction
             """
             # IMU Hand 3D acceleration  columns 4, 5, 6, scale: 16g, resolution: 13-bit
-            line[:, 13] = np.nanstd(data[i:i+512, 4])
-            line[:, 14] = np.nanstd(data[i:i+512, 5])
-            line[:, 15] = np.nanstd(data[i:i+512, 6])
-            # IMU Chest 3D acceleration  columns 21, 22, 23, scale: 16g, resolution: 13-bit
-            line[:, 16] = np.nanstd(data[i:i+512, 21])
-            line[:, 17] = np.nanstd(data[i:i+512, 22])
-            line[:, 18] = np.nanstd(data[i:i+512, 23])
+            line[:, 12] = np.nanstd(data[i:i+512, 4])
+            line[:, 13] = np.nanstd(data[i:i+512, 5])
+            line[:, 14] = np.nanstd(data[i:i+512, 6])
+            # IMU Hand 3D acceleration  columns 21, 22, 23, scale: 16g, resolution: 13-bit
+            line[:, 15] = np.nanstd(data[i:i+512, 21])
+            line[:, 16] = np.nanstd(data[i:i+512, 22])
+            line[:, 17] = np.nanstd(data[i:i+512, 23])
             # IMU ankle 3D acceleration columns 38, 39, 40, scale: 16g, resolution: 13-bit
-            line[:, 19] = np.nanstd(data[i:i+512, 38])
-            line[:, 20] = np.nanstd(data[i:i+512, 39])
-            line[:, 21] = np.nanstd(data[i:i+512, 40])
+            line[:, 18] = np.nanstd(data[i:i+512, 38])
+            line[:, 19] = np.nanstd(data[i:i+512, 39])
+            line[:, 20] = np.nanstd(data[i:i+512, 40])
 
             result_array = np.append(result_array, line, axis=0)
-        # result_array = np.delete(result_array, 0, 0)
+        result_array = np.delete(result_array, 0, 0)
         return result_array
