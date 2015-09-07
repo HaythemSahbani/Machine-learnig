@@ -10,7 +10,7 @@ from matplotlib import pyplot
 
 
 
-protocol_result_file = "/protocol_result_data.dat"
+protocol_result_file = "protocol_result_data.dat"
 optional_result_file = "optional_result_data.dat"
 total_result_file = "total_result_data.dat"
 
