@@ -5,17 +5,14 @@ import shape_data
 import classify
 from sklearn.cross_validation import train_test_split
 from LinearLeastSquares import LinearLeastSquares
+from matplotlib import pyplot
 
 
 
 
-protocol_result_file = "E:/Documents/Passau - 2014 - 2015/Machine learnig and context recognition/" \
-              "Project/protocol_result_data.dat"
-optional_result_file = "E:/Documents/Passau - 2014 - 2015/Machine learnig and context recognition/" \
-              "Project/optional_result_data.dat"
-
-total_result_file = "E:/Documents/Passau - 2014 - 2015/Machine learnig and context recognition/" \
-              "Project/total_result_data.dat"
+protocol_result_file = "/protocol_result_data.dat"
+optional_result_file = "optional_result_data.dat"
+total_result_file = "total_result_data.dat"
 
 
 dictionary = shape_data.load_data(protocol_result_file)
@@ -53,13 +50,11 @@ t = np.array([[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]])
 #t = [i for i in range(len(labels_test))]
 print(theta)
 t1 = np.array([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]])
-# print("thetas shape = ", np.shape(theta), "theta = ", theta)
-#print np.shape(t.T)
-from matplotlib import pyplot
 
+
+
+# Plot the Linear regression graph
 pyplot.figure(facecolor='white')
-# pyplot.axis([78, 183, 0, 9])
-
 line1, = pyplot.plot(np.sort(features_test, axis=None), np.sort(labels_test, axis=None), 'g*', label='Heart rate values')
 t2 = [0, 6.8]
 t3 = [3, 3]
@@ -67,16 +62,10 @@ t4 = [6, 6]
 line2, = pyplot.plot(t2, "b-", label="Linear regression function")
 line3, = pyplot.plot(t3, "g-", label="Threshold")
 pyplot.plot(t4, "g-")
-
-
-# pyplot.plot(cost_function)
-
 pyplot.xlabel('Normalized heart rate')
 pyplot.ylabel('MET values')
 pyplot.title('Classifying heart rate using linear least squares')
 pyplot.legend(handles=[line1, line2, line3], loc=2)
 pyplot.figure(facecolor='white')
-
-#pyplot.legend(handles=[line2], loc=2)
 
 pyplot.show()
