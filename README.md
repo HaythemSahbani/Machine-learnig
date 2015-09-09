@@ -1,6 +1,4 @@
 # Machine learning university project
-===============
-
 
 Assessing the intensity of physical activities is an important task e.g., for medical or sport applications. The goal of this project is to compare two fundamentally distinct approaches, **classification** and **regression**, to address the intensity estimation task.
 
